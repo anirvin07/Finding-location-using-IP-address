@@ -1,0 +1,50 @@
+import requests
+import sys
+
+def get_geolocation(ip_address, api_key):
+    base_url = f"http://api.ipstack.com/{ip_address}?access_key={api_key}"
+
+    try:
+        response = requests.get(base_url)
+        data = response.json()
+
+        if 'error' in data:
+            print(f"Error: {data['error']['info']}")
+        else:
+            print("\nGeolocation Information:")
+            print(f"IP Address: {data['ip']}")
+            print(f"Country: {data['country_name']}")
+            print(f"Region: {data['region_name']}")
+            print(f"City: {data['city']}")
+            print(f"Latitude: {data['latitude']}")
+            print(f"Longitude: {data['longitude']}")
+            print(f"ISP: {data['isp']}")
+            print("\n")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+
+    except KeyboardInterrupt:
+        print("\n\nProgram aborted by user. Exiting...\n")
+        sys.exit()
+
+def main():
+    print("\nIP Geolocation Information Tool\n")
+
+    while True:
+        ip_address = input("Enter an IP address: ")
+
+        # Basic IP address validation
+        ip_octets = ip_address.split('.')
+        if (len(ip_octets) == 4) and all(0 <= int(octet) <= 255 for octet in ip_octets):
+            break
+        else:
+            print("\nThe entered IP address is INVALID! Please retry!\n")
+
+    api_key = input("Enter your ipstack API key: ")
+
+    # Get geolocation information
+    get_geolocation(ip_address, api_key)
+
+if __name__ == "__main__":
+    main()
